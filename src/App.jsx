@@ -12,6 +12,7 @@ import PublicRoute from './utils/PublicRoute';
 import GlobalStyle from './GlobalStyles';
 import { isAdministrator } from './services/auth';
 import ViewForms from './pages/ViewForms';
+import Statistics from './pages/Statistics';
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(JSON.parse(localStorage.getItem('loggedIn')));
@@ -39,6 +40,8 @@ function App() {
             <PrivateRoute path="/users" component={() => <></>} loggedIn={isAdmin} />
 
             <PublicRoute path="/form/view/:id" component={ViewForm} />
+
+            <PublicRoute path="/statistics" component={Statistics} />
 
             {/* EU02 EU06 */}
             <PublicRoute
