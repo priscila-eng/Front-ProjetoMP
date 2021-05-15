@@ -1,6 +1,5 @@
-import { Link } from 'react-router-dom';
-import { IoEyeOutline } from 'react-icons/io5';
 import { useEffect, useState } from 'react';
+import { RiDeleteBin6Line } from 'react-icons/ri';
 import ListForms from '../../components/ListForms';
 import FormItem from '../../components/FormItem';
 import api from '../../services/api';
@@ -8,15 +7,12 @@ import ContainerVerForms from '../../components/ContainerVerForms';
 import StatusMessage from '../../components/StatusMessage';
 import Snackbar from '../../components/Snackbar';
 import Alert from '../../components/Alert';
-import { getUserId } from '../../services/auth';
-import { encode } from '../../services/id';
 import Search from '../../components/Search';
 import ListHeader from '../../components/ListHeader';
 
-// EU07
-function FormAssigned() {
-  const [forms, setForms] = useState([]);
-  const [filteredForms, setFilteredForms] = useState([]);
+function Users() {
+  const [users, setUsers] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [actionsError, setActionsError] = useState('');
@@ -24,19 +20,15 @@ function FormAssigned() {
 
   useEffect(() => {
     api
-      .get(`/assigned/${getUserId()}`)
+      .get('/users')
       .then((res) => res.data)
       .then((data) => {
-        const jsonForm = data.map((form) => ({
-          id: form.id,
-          title: JSON.parse(form.question).hash.title,
-        }));
-        setForms(jsonForm);
-        setFilteredForms(jsonForm);
+        setUsers(data);
+        setFilteredUsers(data);
         setLoading(false);
       })
       .catch(() => {
-        setError('Não foi possível carregar os formulários');
+        setError('Não foi possível carregar os usuários');
         setLoading(false);
       });
   }, []);
@@ -44,26 +36,22 @@ function FormAssigned() {
   function statusMessage() {
     if (loading) return <StatusMessage loading />;
     if (error) return <StatusMessage error>{error}</StatusMessage>;
-    if (forms.length === 0)
-      return <StatusMessage>Nenhum formulário foi compartilhado com você</StatusMessage>;
-    return <StatusMessage>Formulário não encontrado</StatusMessage>;
+    if (users.length === 0) return <StatusMessage>Não existem usuários</StatusMessage>;
+    return <StatusMessage>Usuário não encontrado</StatusMessage>;
   }
 
   return (
     <>
       <ContainerVerForms>
-        <ListHeader title="Compartilhados comigo" createForm />
-        <Search searchIn={forms} setFiltered={setFilteredForms} />
+        <ListHeader title="Usuários" />
+        <Search searchIn={users} setFiltered={setFilteredUsers} user />
         <ListForms>
-          {filteredForms.length
-            ? filteredForms.map((form) => (
-                <FormItem key={form.id}>
-                  <p>{form.title}</p>
+          {filteredUsers.length
+            ? filteredUsers.map((user) => (
+                <FormItem key={user.id}>
+                  <p>{user.email}</p>
                   <div>
-                    <Link to={`/forms/${encode(form.id)}/view`} target="_blank">
-                      <IoEyeOutline className="view" title="Visualizar formulário" />
-                    </Link>
-                    {/* EU09 */}
+                    <RiDeleteBin6Line className="delete" title="Excluir usuário" />
                   </div>
                 </FormItem>
               ))
@@ -85,4 +73,4 @@ function FormAssigned() {
   );
 }
 
-export default FormAssigned;
+export default Users;

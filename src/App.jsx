@@ -13,6 +13,8 @@ import GlobalStyle from './GlobalStyles';
 import { isAdministrator } from './services/auth';
 import ViewForms from './pages/ViewForms';
 import Statistics from './pages/Statistics';
+import Users from './pages/Users';
+import Divider from './pages/Divider';
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(JSON.parse(localStorage.getItem('loggedIn')));
@@ -30,16 +32,18 @@ function App() {
             <PrivateRoute path="/" component={VerForms} loggedIn={loggedIn} exact />
 
             {/* EU05 */}
-            <PrivateRoute path="/form/create" component={CreateForm} loggedIn={loggedIn} />
+            <PrivateRoute path="/forms/create" component={CreateForm} loggedIn={loggedIn} />
+
+            <PublicRoute path="/forms/:id/view" component={ViewForm} />
+
+            <PrivateRoute path="/forms/:id" component={Divider} loggedIn={loggedIn} />
 
             {/* EU16 */}
             <PrivateRoute path="/assigned" component={FormAssigned} loggedIn={loggedIn} />
 
             <PrivateRoute path="/forms" component={ViewForms} loggedIn={isAdmin} />
 
-            <PrivateRoute path="/users" component={() => <></>} loggedIn={isAdmin} />
-
-            <PublicRoute path="/form/view/:id" component={ViewForm} />
+            <PrivateRoute path="/users" component={Users} loggedIn={isAdmin} />
 
             <PublicRoute path="/statistics" component={Statistics} />
 
